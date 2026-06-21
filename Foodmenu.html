@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Smart Kids – Meal Studio | Weekly Food Menu</title>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <meta name="theme-color" content="#490D59">
+    <meta name="description" content="Smart Kids' weekly meal planner for daycare — see this week's menu, print a copy, or download it to share.">
+    <link rel="icon" href="https://smartkids25.vercel.app/SK-Logo.svg" type="image/png">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(145deg, #e9f3ff 0%, #d9e9fa 100%);
+            font-family: 'Segoe UI', system-ui, 'Inter', sans-serif;
+            padding: 1.5rem;
+            color: #1a2c3e;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.96);
+            border-radius: 2rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+            overflow: hidden;
+        }
+        header {
+            background: linear-gradient(120deg, #2b6e9e, #48b5e2);
+            padding: 1.2rem 2rem 1.5rem;
+            text-align: center;
+            color: white;
+        }
+        .logo-container {
+            max-width: 100%;
+            margin: 0 auto 1rem;
+            padding: 0.8rem 0;
+            background: rgba(255,255,255,0.15);
+            border-radius: 1.2rem;
+        }
+        .logo-img {
+            width: 100%;
+            max-height: 110px;
+            object-fit: contain;
+        }
+        .header-title {
+            font-size: clamp(1.8rem, 5vw, 2.8rem);
+            font-weight: 800;
+            margin-top: 0.4rem;
+        }
+        .subtitle {
+            font-size: 1.15rem;
+            opacity: 0.95;
+            margin-top: 0.5rem;
+        }
+        .header-bottom-line {
+            margin-top: 1.2rem;
+            padding-top: 1rem;
+            border-top: 2px solid rgba(255,255,255,0.35);
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .birthday-week-section {
+            background: #fff5e6;
+            margin: 1.2rem 2rem 0.2rem;
+            padding: 1rem 1.8rem;
+            border-radius: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1.2rem;
+            flex-wrap: wrap;
+            box-shadow: 0 6px 14px rgba(255,140,66,0.15);
+            border: 1px solid #ffe0b5;
+        }
+        .birthday-week-section i {
+            font-size: 2rem;
+            color: #e67e22;
+        }
+        .birthday-list {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #a0522d;
+        }
+        .birthday-list span {
+            background: #ff8c42;
+            color: white;
+            padding: 0.2rem 1rem;
+            border-radius: 40px;
+            margin: 0 0.3rem;
+            white-space: nowrap;
+            display: inline-block;
+        }
+        .no-birthday {
+            color: #6b7b8b;
+            font-style: italic;
+        }
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.2rem 2rem;
+            background: #ffffffdd;
+            backdrop-filter: blur(4px);
+            border-bottom: 1px solid #e2edf7;
+        }
+        .date-picker {
+            background: white;
+            padding: 0.5rem 1.2rem;
+            border-radius: 60px;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-weight: 600;
+            border: 1px solid #cde3f5;
+        }
+        .date-picker i { color: #2b6e9e; }
+        input[type="date"] {
+            border: none;
+            font-family: inherit;
+            font-weight: 500;
+            background: transparent;
+            padding: 0.5rem 0;
+            font-size: 0.95rem;
+            color: #1f4e6e;
+        }
+        .btn-group { display: flex; gap: 1rem; flex-wrap: wrap; }
+        .btn {
+            border: none;
+            padding: 0.7rem 1.6rem;
+            border-radius: 60px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: #f0f4fa;
+            color: #2c5a7a;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+        .btn-primary {
+            background: linear-gradient(95deg, #ff8c42, #ff6a2c);
+            color: white;
+            box-shadow: 0 8px 18px rgba(255,107,43,0.25);
+        }
+        .btn-primary:hover { transform: translateY(-3px); }
+        .btn-wa {
+            background: linear-gradient(100deg, #25d366, #128c7e);
+            color: white;
+        }
+        .btn-html {
+            background: linear-gradient(100deg, #2c3e50, #1a252f);
+            color: white;
+        }
+        .btn-download {
+            background: linear-gradient(100deg, #4a6fa5, #3a5a8a);
+            color: white;
+        }
+        .btn-reset {
+            background: #eef2f7;
+            color: #2b6e9e;
+            border: 1px solid #cbdde9;
+        }
+        .meal-planner { padding: 1.8rem 1.5rem; overflow-x: auto; }
+        .meal-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 1rem;
+            min-width: 880px;
+        }
+        .meal-table th {
+            background: #2b6e9e;
+            color: white;
+            padding: 0.8rem 0.5rem;
+            font-weight: 700;
+            font-size: 1rem;
+            border-radius: 20px 20px 12px 12px;
+            text-align: center;
+        }
+        .holiday-toggle {
+            margin-top: 8px;
+            background: rgba(255,255,240,0.2);
+            border: none;
+            border-radius: 40px;
+            padding: 4px 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            cursor: pointer;
+            color: white;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            backdrop-filter: blur(4px);
+        }
+        .holiday-toggle.active { background: #ffb347; color: #2d2b1f; }
+        .time-cell {
+            background: #fef7e0;
+            font-weight: 800;
+            text-align: center;
+            padding: 1rem 0.5rem;
+            border-radius: 1.2rem;
+            color: #c06d1f;
+            font-size: 0.9rem;
+            width: 100px;
+        }
+        .meal-card {
+            background: white;
+            border-radius: 1.5rem;
+            padding: 1rem 0.9rem;
+            min-height: 180px;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.2s ease;
+            box-shadow: 0 8px 18px rgba(0,0,0,0.05);
+            border: 1px solid #e9f0f5;
+        }
+        .holiday-card {
+            background: #fff4e6;
+            border: 1px dashed #f4a261;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        .meal-card:hover:not(.holiday-card) {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 28px -12px rgba(0,0,0,0.2);
+        }
+        .meal-icon {
+            font-size: 2.4rem;
+            width: 54px;
+            height: 54px;
+            background: #eef5fc;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 0.8rem;
+        }
+        .meal-header { display: flex; align-items: center; margin-bottom: 0.6rem; }
+        .meal-name { font-weight: 800; font-size: 1rem; color: #1a4c6e; }
+        .meal-desc {
+            font-size: 0.78rem;
+            color: #4a627a;
+            margin: 0.5rem 0 0.9rem;
+            flex: 1;
+            line-height: 1.4;
+        }
+        .meal-select {
+            width: 100%;
+            padding: 0.6rem 2rem 0.6rem 0.8rem;
+            border-radius: 40px;
+            border: 1px solid #d4e2ed;
+            background: #fefefe;
+            font-size: 0.75rem;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        .birthday-banner {
+            background: linear-gradient(90deg, #ff6b9d, #c44569);
+            color: white;
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 1.5rem 0;
+            border-radius: 1.2rem;
+            text-align: center;
+            font-weight: 700;
+            box-shadow: 0 8px 20px rgba(255,107,157,0.3);
+            display: none;
+        }
+        .birthday-banner.show { display: block; }
+        .birthday-banner span { font-size: 1.35rem; text-shadow: 0 2px 6px rgba(0,0,0,0.2); }
+        .nutrition-badge {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            justify-content: center;
+            padding: 1rem 1.5rem;
+            background: #f9fdfe;
+            border-top: 1px solid #d9e9f2;
+        }
+        .badge-item {
+            background: white;
+            padding: 0.3rem 1rem;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #2f6b8f;
+        }
+        .footer {
+            background: #11212e;
+            color: #bcd0df;
+            text-align: center;
+            padding: 1.4rem 1.2rem;
+            font-size: 0.82rem;
+        }
+        .notification {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #2ecc71;
+            color: white;
+            padding: 0.9rem 1.5rem;
+            border-radius: 60px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 12px 20px rgba(0,0,0,0.2);
+            opacity: 0;
+            transform: translateY(30px);
+            transition: 0.3s;
+            z-index: 1200;
+            pointer-events: none;
+        }
+        .notification.show { opacity: 1; transform: translateY(0); }
+        .print-header { display: none; text-align: center; padding: 1rem; }
+        @media print {
+            .controls, .notification, .select-wrapper, .btn-group, .nutrition-badge, .holiday-toggle, .birthday-week-section { display: none !important; }
+            .print-header { display: block !important; }
+        }
+        @media (max-width: 760px) {
+            body { padding: 0.8rem; }
+            .meal-card { padding: 0.8rem; min-height: 160px; }
+        }
+    </style>
+</head>
+<body>
+<nav class="utility-topnav">
+  <div class="container">
+    <a href="index.html"><i class="fas fa-arrow-left" aria-hidden="true"></i> Back to Smart Kids</a>
+    <span class="crumbs"><a href="index.html">Home</a> / Food Menu</span>
+  </div>
+</nav>
+<div class="container">
+    <header>
+        <div class="logo-container">
+            <img src="https://smartkids.org.lk/wp-content/uploads/2025/03/Web-Banner-SK-SVG.svg" alt="Smart Kids Logo" class="logo-img">
+        </div>
+        <h1 class="header-title">
+            <i class="fa-solid fa-children" style="color:#ffdd99;"></i> 
+            Smart Kids - Meal Studio 
+            <i class="fa-solid fa-child-reaching" style="color:#ffdd99;"></i>
+        </h1>
+        <p class="subtitle">Little one, Big dreams | Nutrient‑rich weekly menu | brain & body boost</p>
+        <div class="header-bottom-line">
+            <span>🌱 Fuel for Growing Bodies &amp; Brilliant Minds</span>
+            <span style="opacity:0.8;">•</span>
+            <span>🥗 Wholesome • Tasty • Kid-Approved</span>
+        </div>
+    </header>
+
+    <div class="birthday-week-section" id="birthdayWeekSection">
+        <i class="fa-solid fa-cake-candles"></i>
+        <div class="birthday-list" id="birthdayListContainer">
+            <span class="no-birthday"><i class="fa-solid fa-spinner fa-pulse"></i> Loading birthdays...</span>
+        </div>
+    </div>
+
+    <div class="controls">
+        <div class="date-picker">
+            <i class="fas fa-calendar-alt"></i>
+            <label for="start-date">Week start (Monday):</label>
+            <input type="date" id="start-date">
+            <span style="font-size:0.7rem; background:#e9f5e9; border-radius:20px; padding:2px 12px;">💾 auto-saved</span>
+        </div>
+        <div class="btn-group">
+            <button class="btn btn-primary" id="download-btn"><i class="fas fa-camera"></i> Save as Image</button>
+            <button class="btn btn-wa" id="copy-whatsapp-btn"><i class="fab fa-whatsapp"></i> WhatsApp Menu</button>
+            <button class="btn btn-html" id="copy-html-btn"><i class="fas fa-code"></i> Copy HTML Menu</button>
+            <button class="btn btn-download" id="download-html-file-btn"><i class="fas fa-download"></i> Download HTML File</button>
+            <button class="btn btn-reset" id="reset-default-btn"><i class="fas fa-undo-alt"></i> Reset Week</button>
+        </div>
+    </div>
+
+    <div class="meal-planner" id="meal-schedule">
+        <div class="birthday-banner" id="birthday-banner">
+            <span id="birthday-text">🎉 Happy Birthday! 🎂</span>
+        </div>
+        <div class="print-header" id="print-header">
+            <i class="fa-solid fa-children" style="font-size:4rem; color:#2b6e9e;"></i>
+            <h2 style="color:#1e4a6e;">Smart Kids Daycare Center</h2>
+            <p style="color:#2c5a7a;"><i class="fa-solid fa-child-reaching"></i> Balanced nutrition for growing minds</p>
+        </div>
+        <table class="meal-table" id="dynamic-meal-table">
+            <thead>
+                <tr>
+                    <th>Time</th>
+                    <th id="mon-header">Monday</th>
+                    <th id="tue-header">Tuesday</th>
+                    <th id="wed-header">Wednesday</th>
+                    <th id="thu-header">Thursday</th>
+                    <th id="fri-header">Friday</th>
+                </tr>
+            </thead>
+            <tbody id="meal-tbody"></tbody>
+        </table>
+    </div>
+
+    <div class="nutrition-badge">
+        <span class="badge-item"><i class="fas fa-apple-alt"></i> Vitamins</span>
+        <span class="badge-item"><i class="fas fa-dumbbell"></i> Protein</span>
+        <span class="badge-item"><i class="fas fa-brain"></i> Omega‑3</span>
+        <span class="badge-item"><i class="fas fa-carrot"></i> Fiber</span>
+        <span class="badge-item"><i class="fas fa-bone"></i> Calcium</span>
+        <span class="badge-item"><i class="fas fa-tint"></i> Hydration</span>
+        <span class="badge-item"><i class="fas fa-leaf"></i> Iron</span>
+    </div>
+
+    <div class="footer">
+        <p>🍎 Smart Kids Meal Planner • wholesome, allergy‑aware &amp; kid‑approved 🌟</p>
+        <p>📋 Meals are automatically saved for the selected week in this browser.</p>
+    </div>
+
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i> Meal updated!
+    </div>
+</div>
+
+<script>
+    // ---------- MEAL DATABASE ----------
+    const MEAL_LIBRARY = {
+        breakfast: {
+            pongal: { icon: "🍚🥥", name: "Pongal", desc: "Rice & moong dal | Protein, iron" },
+            uppuma: { icon: "🥘🌾", name: "Uppuma", desc: "Semolina with veggies | Carbs, fiber" },
+            ulunthu_kali: { icon: "🥣💪", name: "Ulunthu Kali", desc: "Urad dal porridge | High protein" },
+            string_hoppers: { icon: "🍝🥔", name: "String Hoppers", desc: "Steamed rice noodles | Carbs" },
+            green_gram: { icon: "☘️🌱", name: "Green Gram", desc: "Whole moong | Plant protein" },
+            milk_rice: { icon: "🍚🥛", name: "Milk Rice", desc: "Iron-fortified rice + milk" },
+            ilai_kanji: { icon: "🍃🍚", name: "Ilai Kanji", desc: "Herbal rice porridge" },
+            thosai: { icon: "🥞🥄", name: "Thosai & Sambar", desc: "Fermented lentils" },
+            kadalai: { icon: "🥣🌱", name: "Kadalai", desc: "Roasted chickpeas" },
+            pittu: { icon: "🥖🥘", name: "Pittu & Sothi", desc: "Coconut rice flour" },
+            kowpi: { icon: "🌾🥣", name: "Kowpi", desc: "Millet based" },
+            noodles: { icon: "🍜🥕", name: "Veg Noodles", desc: "Whole wheat & veggies" },
+            pumpkin_rotty: { icon: "🎃🥞", name: "Pumpkin Rotty", desc: "Pumpkin + wholewheat" }
+        },
+        juice: {
+            mango: { icon: "🍑🥃", name: "Mango Magic", desc: "Vit A, C" },
+            wood_apple: { icon: "🍨🍷", name: "Wood Apple", desc: "Fiber, vitamin C" },
+            passion_fruit: { icon: "🍈🍸", name: "Passion Fruit", desc: "Antioxidants" },
+            Guava: { icon: "🍐🍵", name: "Guava Delight", desc: "Lycopene, vitamin C" },
+            watermelon: { icon: "🍉🥤", name: "Watermelon Splash", desc: "Hydration" },
+            papaya: { icon: "🏉🌞", name: "Papaya Nectar", desc: "Papain enzyme" },
+            lemon: { icon: "🍋⚡", name: "Lemon Zinger", desc: "Immune vitamin C" },
+            orange: { icon: "🍊☀️", name: "Orange Sunrise", desc: "Vit C + folate" }
+        },
+        lunch: {
+            rice_fish: { icon: "🍚🐟", name: "Fish Rice Bowl", desc: "Omega-3, iron" },
+            rice_egg: { icon: "🍚🥚", name: "Egg Rice Bowl", desc: "Choline, protein" },
+            rice_chicken: { icon: "🍚🍗", name: "Chicken Rice Bowl", desc: "Lean protein, iron" },
+            soya_rice: { icon: "🌱🍚", name: "Soya Rice", desc: "Plant protein" },
+            biryani: { icon: "🍲🌿", name: "Veg Biryani", desc: "Complete grains" }
+        },
+        dessert: {
+            banana: { icon: "🍌💛", name: "Banana", desc: "Potassium" },
+            yoghurt: { icon: "🥛🍶", name: "Yoghurt", desc: "Probiotics" },
+            pudding: { icon: "🍮🥄", name: "Pudding", desc: "Calcium" },
+            fruit_salad: { icon: "🍎🥗", name: "Fruit Salad", desc: "Mixed vitamins" },
+            jelly: { icon: "🍮🌈", name: "Jelly", desc: "Low-calorie" },
+            smoothy: { icon: "🥤🏉", name: "Smoothy", desc: "Vit C, calcium" },
+            papaya: { icon: "🏉❤️", name: "Papaya", desc: "Digestive enzymes" },
+            Payasam: { icon: "🥣🍬", name: "Payasam", desc: "Jaggery + milk" }
+        },
+        snack: {
+            tea_samaposha: { icon: "☕🥟", name: "Tea + Patties", desc: "Wholegrain cereal" },
+            tea_vadai: { icon: "☕🍪", name: "Tea + P. Vadai", desc: "Urad dal" },
+            tea_lattu: { icon: "☕🌰", name: "Tea + Lattu", desc: "Roasted gram" },
+            tea_aval: { icon: "☕🍯", name: "Tea + Aval", desc: "Flattened rice" },
+            tea_kesari: { icon: "☕🍞", name: "Tea + Kesari", desc: "Semolina sweet" },
+            tea_kolukkaddai: { icon: "☕🥟", name: "Tea + Kolukkaddai", desc: "Steamed rice dumpling" },
+            tea_suruttappam: { icon: "☕🥖", name: "Tea + Suruttappam", desc: "Crispy pancake" },
+            tea_cutlet: { icon: "☕🍘", name: "Tea + Fish Cutlet", desc: "Omega-3" },
+            tea_uvadai: { icon: "☕🍩", name: "Tea + U. Vadai", desc: "Lentil snack" },
+            tea_cake: { icon: "☕🍰", name: "Tea + Cake", desc: "Soft treat" },
+            bread: { icon: "☕🍞", name: "Bread & Jam", desc: "Wholewheat" }
+        }
+    };
+
+    const DEFAULT_PLAN = {
+        mon: { breakfast: "ulunthu_kali", juice: "mango", lunch: "rice_fish", dessert: "banana", snack: "tea_cutlet" },
+        tue: { breakfast: "string_hoppers", juice: "watermelon", lunch: "rice_chicken", dessert: "yoghurt", snack: "tea_samaposha" },
+        wed: { breakfast: "green_gram", juice: "papaya", lunch: "rice_egg", dessert: "pudding", snack: "tea_uvadai" },
+        thu: { breakfast: "thosai", juice: "lemon", lunch: "soya_rice", dessert: "fruit_salad", snack: "tea_cake" },
+        fri: { breakfast: "pongal", juice: "orange", lunch: "biryani", dessert: "jelly", snack: "tea_samaposha" }
+    };
+
+    const mealTimes = [
+        { id: "breakfast", label: "8:30", timeLabel: "8:30 → Breakfast" },
+        { id: "juice", label: "10:30", timeLabel: "10:30 → Juice" },
+        { id: "lunch", label: "12:00", timeLabel: "12:00 → Lunch" },
+        { id: "dessert", label: "12:30", timeLabel: "12:30 → Dessert" },
+        { id: "snack", label: "3:30", timeLabel: "3:30 → Tea & Snack" }
+    ];
+
+    const days = ["mon", "tue", "wed", "thu", "fri"];
+    const dayNamesFull = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+
+    let currentSelections = JSON.parse(JSON.stringify(DEFAULT_PLAN));
+    let holidays = { mon: false, tue: false, wed: false, thu: false, fri: false };
+    let currentBirthdays = { names: [], dates: [] };
+
+    // ---------- LOCAL PERSISTENCE (same browser) ----------
+    function getMondayKeyFromDate(dateObj) {
+        const monday = new Date(dateObj);
+        const day = monday.getDay();
+        const diff = (day === 0 ? -6 : 1) - day;
+        monday.setDate(monday.getDate() + diff);
+        return monday.toISOString().slice(0,10);
+    }
+    function getCurrentMondayKey() {
+        const dateInput = document.getElementById('start-date');
+        let baseDate = dateInput.valueAsDate || new Date();
+        return getMondayKeyFromDate(baseDate);
+    }
+
+    function savePlanToLocal() {
+        const weekKey = getCurrentMondayKey();
+        const data = { selections: currentSelections, holidays: holidays };
+        localStorage.setItem(`mealPlan_${weekKey}`, JSON.stringify(data));
+    }
+
+    function loadPlanFromLocal() {
+        const weekKey = getCurrentMondayKey();
+        const stored = localStorage.getItem(`mealPlan_${weekKey}`);
+        if (stored) {
+            try {
+                const data = JSON.parse(stored);
+                currentSelections = data.selections || JSON.parse(JSON.stringify(DEFAULT_PLAN));
+                holidays = data.holidays || { mon: false, tue: false, wed: false, thu: false, fri: false };
+            } catch(e) { fallbackDefault(); }
+        } else {
+            fallbackDefault();
+        }
+    }
+
+    function fallbackDefault() {
+        currentSelections = JSON.parse(JSON.stringify(DEFAULT_PLAN));
+        holidays = { mon: false, tue: false, wed: false, thu: false, fri: false };
+    }
+
+    // --- UI Helpers ---
+    function showNotif(msg) {
+        const n = document.getElementById('notification');
+        n.innerHTML = `<i class="fas fa-check-circle"></i> ${msg}`;
+        n.classList.add('show');
+        setTimeout(() => n.classList.remove('show'), 3000);
+    }
+
+    function buildMealTable() {
+        const tbody = document.getElementById("meal-tbody");
+        tbody.innerHTML = "";
+        for (const time of mealTimes) {
+            const row = document.createElement("tr");
+            const tdTime = document.createElement("td");
+            tdTime.className = "time-cell";
+            tdTime.innerHTML = time.timeLabel;
+            row.appendChild(tdTime);
+            for (const day of days) {
+                const td = document.createElement("td");
+                const isHoliday = holidays[day];
+                if (isHoliday) {
+                    td.innerHTML = `<div class="meal-card holiday-card"><div class="meal-icon"><i class="fas fa-umbrella-beach" style="font-size:2rem;"></i></div><div class="meal-name">🌴 Holiday</div><div class="meal-desc">No meals served today.</div></div>`;
+                } else {
+                    const mealKey = currentSelections[day][time.id];
+                    const mealData = MEAL_LIBRARY[time.id]?.[mealKey] || { icon: "🍽️", name: "Select meal", desc: "Pick a healthy option" };
+                    td.innerHTML = `
+                        <div class="meal-card" id="card-${day}-${time.id}">
+                            <div class="meal-header"><div class="meal-icon"><span style="font-size:1.9rem;">${mealData.icon}</span></div><div class="meal-name">${mealData.name}</div></div>
+                            <div class="meal-desc">${mealData.desc}</div>
+                            <div class="select-wrapper"><select class="meal-select" data-day="${day}" data-time="${time.id}" id="select-${day}-${time.id}"></select></div>
+                        </div>
+                    `;
+                }
+                row.appendChild(td);
+            }
+            tbody.appendChild(row);
+        }
+        for (const time of mealTimes) {
+            for (const day of days) {
+                if (holidays[day]) continue;
+                const selectEl = document.getElementById(`select-${day}-${time.id}`);
+                if (selectEl) {
+                    const currentVal = currentSelections[day][time.id];
+                    const lib = MEAL_LIBRARY[time.id];
+                    selectEl.innerHTML = "";
+                    for (const [key, val] of Object.entries(lib)) {
+                        const option = document.createElement("option");
+                        option.value = key;
+                        option.textContent = `${val.icon} ${val.name}`;
+                        if (key === currentVal) option.selected = true;
+                        selectEl.appendChild(option);
+                    }
+                    selectEl.addEventListener("change", (e) => {
+                        const newVal = e.target.value;
+                        const d = e.target.dataset.day;
+                        const t = e.target.dataset.time;
+                        if (!holidays[d]) {
+                            currentSelections[d][t] = newVal;
+                            updateCardUI(d, t, newVal);
+                            savePlanToLocal();
+                            showNotif(`🍽️ ${MEAL_LIBRARY[t][newVal]?.name || "meal"} saved for this week!`);
+                        }
+                    });
+                }
+            }
+        }
+    }
+
+    function updateCardUI(day, timeKey, mealKey) {
+        const cardDiv = document.getElementById(`card-${day}-${timeKey}`);
+        if (!cardDiv || holidays[day]) return;
+        const meal = MEAL_LIBRARY[timeKey]?.[mealKey];
+        if (meal) {
+            cardDiv.querySelector('.meal-icon').innerHTML = `<span style="font-size:1.9rem;">${meal.icon}</span>`;
+            cardDiv.querySelector('.meal-name').innerText = meal.name;
+            cardDiv.querySelector('.meal-desc').innerText = meal.desc;
+        }
+    }
+
+    function toggleHoliday(day) {
+        holidays[day] = !holidays[day];
+        buildMealTable();
+        savePlanToLocal();
+        const btn = document.getElementById(`holiday-btn-${day}`);
+        if (btn) btn.innerHTML = holidays[day] ? '<i class="fas fa-palm-tree"></i> Holiday ON' : '<i class="fas fa-sun"></i> Holiday OFF';
+        if (holidays[day]) btn?.classList.add('active'); else btn?.classList.remove('active');
+        showNotif(holidays[day] ? `${dayNamesFull[days.indexOf(day)]} holiday set` : `${dayNamesFull[days.indexOf(day)]} meals restored`);
+    }
+
+    function addHolidayToggles() {
+        days.forEach(day => {
+            const th = document.getElementById(`${day}-header`);
+            if (th && !th.querySelector('.holiday-toggle')) {
+                const toggleBtn = document.createElement('button');
+                toggleBtn.id = `holiday-btn-${day}`;
+                toggleBtn.className = `holiday-toggle ${holidays[day] ? 'active' : ''}`;
+                toggleBtn.innerHTML = holidays[day] ? '<i class="fas fa-palm-tree"></i> Holiday ON' : '<i class="fas fa-sun"></i> Holiday OFF';
+                toggleBtn.addEventListener('click', (e) => { e.stopPropagation(); toggleHoliday(day); });
+                const originalText = th.childNodes[0]?.nodeValue || th.innerText.split('\n')[0];
+                th.innerHTML = '';
+                th.appendChild(document.createTextNode(originalText));
+                th.appendChild(document.createElement('br'));
+                th.appendChild(toggleBtn);
+            }
+        });
+    }
+
+    // ---------- BIRTHDAY CSV ----------
+    function parseCSVLine(line) {
+        const result = [];
+        let current = '';
+        let inQuotes = false;
+        for (let i = 0; i < line.length; i++) {
+            const char = line[i];
+            if (char === '"' && (i === 0 || line[i-1] !== '\\')) {
+                inQuotes = !inQuotes;
+            } else if (char === ',' && !inQuotes) {
+                result.push(current.trim());
+                current = '';
+            } else {
+                current += char;
+            }
+        }
+        result.push(current.trim());
+        return result.map(field => field.replace(/^"|"$/g, '').trim());
+    }
+
+    async function fetchBirthdaysForWeek(mondayDate) {
+        const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR6bpUOOZbWm9dkrktGhlmuMkeUbF0LXNJtwglr_yUK5XQ8U7kBJ9-Ia18uH0pcGOCUWLJx66v6vRAq/pub?output=csv';
+        try {
+            const response = await fetch(csvUrl);
+            if (!response.ok) throw new Error();
+            const csvText = await response.text();
+            const lines = csvText.split('\n').filter(l => l.trim());
+            if (lines.length < 2) throw new Error();
+            const start = new Date(mondayDate);
+            const end = new Date(start);
+            end.setDate(start.getDate() + 6);
+            const currentYear = new Date().getFullYear();
+            const names = [], dates = [];
+            for (let i = 1; i < lines.length; i++) {
+                const fields = parseCSVLine(lines[i]);
+                if (fields.length < 3) continue;
+                const name = fields[0];
+                const dobStr = fields[1];
+                const bdayStr = fields[2];
+                if (!name) continue;
+                let bdayThisYear;
+                if (bdayStr) {
+                    bdayThisYear = new Date(bdayStr);
+                } else if (dobStr) {
+                    const dob = new Date(dobStr);
+                    if (!isNaN(dob)) bdayThisYear = new Date(currentYear, dob.getMonth(), dob.getDate());
+                }
+                if (bdayThisYear && !isNaN(bdayThisYear) && bdayThisYear >= start && bdayThisYear <= end) {
+                    names.push(name);
+                    dates.push(bdayThisYear.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }));
+                }
+            }
+            displayBirthdays({ names, dates });
+        } catch {
+            useSampleBirthdays(mondayDate);
+        }
+    }
+
+    function useSampleBirthdays(mondayDate) {
+        const SAMPLE = [{ name: "Akarnika", dob: "2022-04-10" },{ name: "Sarah", dob: "2021-04-12" },{ name: "Ravi", dob: "2020-04-15" }];
+        const start = new Date(mondayDate);
+        const end = new Date(start); end.setDate(start.getDate()+6);
+        const currentYear = new Date().getFullYear();
+        const names = [], dates = [];
+        SAMPLE.forEach(b => {
+            const dob = new Date(b.dob);
+            if (!isNaN(dob)) {
+                const bday = new Date(currentYear, dob.getMonth(), dob.getDate());
+                if (bday >= start && bday <= end) { names.push(b.name); dates.push(bday.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'})); }
+            }
+        });
+        displayBirthdays({ names, dates });
+    }
+
+    function displayBirthdays(result) {
+        const container = document.getElementById('birthdayListContainer');
+        const names = result.names || [];
+        const dates = result.dates || [];
+        currentBirthdays = { names, dates };
+        if (names.length === 0) container.innerHTML = '<span class="no-birthday"><i class="fa-regular fa-calendar"></i> No birthdays this week</span>';
+        else {
+            let html = '';
+            for (let i=0;i<names.length;i++) html += `<span><i class="fa-solid fa-gift"></i> ${names[i]} (${dates[i]})</span>`;
+            container.innerHTML = html;
+        }
+        const bannerSpan = document.getElementById('birthday-text');
+        if (names.length === 1) bannerSpan.innerHTML = `🎉 Happy Birthday ${names[0]} (${dates[0]})! 🎂`;
+        else if (names.length > 1) bannerSpan.innerHTML = `🎉 Happy Birthday to ${names.map((n,i)=>`${n} (${dates[i]})`).join(', ')}! 🎂`;
+        else bannerSpan.innerHTML = `🎉 Happy Birthday! 🎂`;
+    }
+
+    // ---------- DATE HEADERS & WEEK CHANGE ----------
+    function getMondayDateFromInput() {
+        const dateInput = document.getElementById('start-date');
+        let date = dateInput.valueAsDate || new Date();
+        const day = date.getDay();
+        const diff = (day === 0 ? -6 : 1) - day;
+        const monday = new Date(date);
+        monday.setDate(date.getDate() + diff);
+        return monday;
+    }
+
+    function getFormattedDayHeaders() {
+        const monday = getMondayDateFromInput();
+        const headers = [];
+        for (let i = 0; i < days.length; i++) {
+            const currentDay = new Date(monday);
+            currentDay.setDate(monday.getDate() + i);
+            const dateStr = `${currentDay.getDate().toString().padStart(2,'0')}/${(currentDay.getMonth()+1).toString().padStart(2,'0')}`;
+            headers.push(`${dayNamesFull[i].slice(0,3)} (${dateStr})`);
+        }
+        return headers;
+    }
+
+    function updateDateHeaders() {
+        const monday = getMondayDateFromInput();
+        for (let i = 0; i < days.length; i++) {
+            const currentDay = new Date(monday);
+            currentDay.setDate(monday.getDate() + i);
+            const formatted = `${dayNamesFull[i].slice(0,3)} (${currentDay.getDate().toString().padStart(2,'0')}/${(currentDay.getMonth()+1).toString().padStart(2,'0')})`;
+            const th = document.getElementById(`${days[i]}-header`);
+            if (th) {
+                const existingBtn = th.querySelector('.holiday-toggle');
+                const textNode = Array.from(th.childNodes).find(n => n.nodeType === Node.TEXT_NODE);
+                if (textNode) textNode.nodeValue = formatted;
+                else th.prepend(document.createTextNode(formatted));
+                if (!existingBtn) addHolidayToggles();
+            }
+        }
+    }
+
+    async function refreshWeek() {
+        updateDateHeaders();
+        loadPlanFromLocal();
+        buildMealTable();
+        addHolidayToggles();
+        const monday = getMondayDateFromInput();
+        fetchBirthdaysForWeek(monday);
+        showNotif(`📅 Week loaded`);
+    }
+
+    function resetWeek() {
+        const weekKey = getCurrentMondayKey();
+        localStorage.removeItem(`mealPlan_${weekKey}`);
+        fallbackDefault();
+        buildMealTable();
+        addHolidayToggles();
+        savePlanToLocal();
+        showNotif(`✨ Week reset to default menu.`);
+    }
+
+    // ---------- GENERATE COMPLETE HTML MENU (for copy & download) ----------
+    function generateFullHTMLDocument() {
+        const headers = getFormattedDayHeaders();
+        let tableRows = '';
+        for (const time of mealTimes) {
+            tableRows += `<tr><td style="background:#fef7e0; font-weight:bold; padding:12px; border:1px solid #ddd;">${time.timeLabel}</td>`;
+            for (let idx = 0; idx < days.length; idx++) {
+                const day = days[idx];
+                const isHoliday = holidays[day];
+                if (isHoliday) {
+                    tableRows += `<td style="background:#fff4e6; text-align:center; padding:12px; border:1px solid #ddd;">🌴 Holiday<br><small>No meals</small></td>`;
+                } else {
+                    const mealKey = currentSelections[day][time.id];
+                    const meal = MEAL_LIBRARY[time.id]?.[mealKey];
+                    if (meal) {
+                        tableRows += `<td style="padding:12px; border:1px solid #ddd; vertical-align:top;"><strong>${meal.icon} ${meal.name}</strong><br><small>${meal.desc}</small></td>`;
+                    } else {
+                        tableRows += `<td style="padding:12px; border:1px solid #ddd;">—</td>`;
+                    }
+                }
+            }
+            tableRows += `</tr>`;
+        }
+
+        const birthdaySection = currentBirthdays.names.length ?
+            `<div style="background:#fff0e6; padding:12px; border-radius:30px; margin:15px 0; text-align:center;">
+                <strong>🎂 Birthdays this week:</strong> ${currentBirthdays.names.map((n,i)=>`${n} (${currentBirthdays.dates[i]})`).join(', ')}
+             </div>` : '';
+
+        const weekStartDate = getMondayDateFromInput().toLocaleDateString('en-GB'); // dd/mm/yyyy
+
+        return `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Kids Weekly Meal Plan</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f9ff;
+            color: #1a2c3e;
+        }
+        h2 {
+            color: #2b6e9e;
+            border-bottom: 3px solid #ff8c42;
+            display: inline-block;
+            padding-bottom: 5px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin: 20px 0;
+        }
+        th {
+            background: #2b6e9e;
+            color: white;
+            padding: 12px;
+            font-weight: bold;
+            text-align: center;
+            border: 1px solid #1f5a7e;
+        }
+        td {
+            border: 1px solid #d9e9f2;
+            vertical-align: top;
+        }
+        .footer-note {
+            margin-top: 20px;
+            font-size: 0.85rem;
+            color: #4a627a;
+            text-align: center;
+            border-top: 1px solid #cde3f5;
+            padding-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <h2>🍽️ Smart Kids Weekly Meal Plan</h2>
+    ${birthdaySection}
+    <table>
+        <thead>
+            <tr><th>Time</th>${headers.map(h => `<th>${h}</th>`).join('')}</tr>
+        </thead>
+        <tbody>
+            ${tableRows}
+        </tbody>
+    </table>
+    <div class="footer-note">
+        💪 Key Nutrients: Protein • Omega-3 • Iron • Calcium • Fiber • Vitamins<br>
+        📅 Plan for week starting ${weekStartDate}<br>
+        🌟 Smart Kids Daycare – Balanced meals for happy, growing kids
+    </div>
+</body>
+</html>`;
+    }
+
+    async function copyHTMLToClipboard() {
+        const fullHtml = generateFullHTMLDocument();
+        try {
+            // Try the modern clipboard API
+            await navigator.clipboard.writeText(fullHtml);
+            showNotif("📋 Full HTML menu copied! Ready to paste anywhere.");
+        } catch (err) {
+            // Fallback using textarea
+            const textarea = document.createElement('textarea');
+            textarea.value = fullHtml;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            showNotif("📋 HTML menu copied (fallback method)");
+        }
+    }
+
+    function downloadHTMLFile() {
+        const fullHtml = generateFullHTMLDocument();
+        const blob = new Blob([fullHtml], { type: 'text/html' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        const monday = getMondayDateFromInput();
+        const dateStr = monday.toISOString().slice(0,10);
+        a.download = `smartkids_mealplan_${dateStr}.html`;
+        a.href = url;
+        a.click();
+        URL.revokeObjectURL(url);
+        showNotif("📁 HTML file downloaded!");
+    }
+
+    // ---------- EVENT LISTENERS ----------
+    document.getElementById('copy-html-btn').addEventListener('click', copyHTMLToClipboard);
+    document.getElementById('download-html-file-btn').addEventListener('click', downloadHTMLFile);
+    document.getElementById('reset-default-btn').addEventListener('click', resetWeek);
+    document.getElementById('download-btn').addEventListener('click', () => {
+        const element = document.getElementById('meal-schedule');
+        const banner = document.getElementById('birthday-banner');
+        const printHeader = document.getElementById('print-header');
+        const oldDisplay = printHeader.style.display;
+        printHeader.style.display = 'block';
+        banner.classList.add('show');
+        const selects = document.querySelectorAll('.select-wrapper');
+        const toggles = document.querySelectorAll('.holiday-toggle');
+        selects.forEach(sel => sel.style.visibility = 'hidden');
+        toggles.forEach(t => t.style.visibility = 'hidden');
+        html2canvas(element, { scale: 2.2, backgroundColor: '#ffffff' }).then(canvas => {
+            const link = document.createElement('a');
+            link.download = `smartkids_mealplan_${new Date().toISOString().slice(0,10)}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+            printHeader.style.display = oldDisplay;
+            banner.classList.remove('show');
+            selects.forEach(sel => sel.style.visibility = 'visible');
+            toggles.forEach(t => t.style.visibility = 'visible');
+            showNotif("📸 Meal plan image saved!");
+        }).catch(() => {
+            printHeader.style.display = oldDisplay;
+            banner.classList.remove('show');
+            selects.forEach(sel => sel.style.visibility = 'visible');
+            toggles.forEach(t => t.style.visibility = 'visible');
+            showNotif("⚠️ Screenshot error");
+        });
+    });
+
+    document.getElementById('copy-whatsapp-btn').addEventListener('click', async () => {
+        let msg = "🌟 Smart Kids Daycare 🌟\n🍽️ Weekly Nutritious Menu\n\n";
+        if (currentBirthdays.names.length > 0) {
+            msg += "🎂 *Birthdays This Week* 🎉\n";
+            for (let i=0;i<currentBirthdays.names.length;i++) msg += `   🎈 ${currentBirthdays.names[i]} (${currentBirthdays.dates[i]})\n`;
+            msg += "\n";
+        }
+        const headers = getFormattedDayHeaders();
+        for (let idx=0;idx<days.length;idx++) {
+            const day = days[idx];
+            const dayNameWithDate = headers[idx];
+            const isHoliday = holidays[day];
+            msg += `📅 ${dayNameWithDate}\n`;
+            if (isHoliday) msg += `   🌴 Holiday – No meals served today.\n`;
+            else for (const time of mealTimes) {
+                const mealKey = currentSelections[day][time.id];
+                const meal = MEAL_LIBRARY[time.id]?.[mealKey];
+                if (meal) msg += `   ${time.label} → ${meal.icon} ${meal.name}\n`;
+            }
+            msg += "\n";
+        }
+        msg += "💪 Key Nutrients: Protein • Omega-3 • Iron • Calcium • Fiber • Vitamins\n❤️ Balanced meals for happy, growing kids – Smart Kids Team 🌈";
+        try { await navigator.clipboard.writeText(msg); showNotif("📋 WhatsApp menu copied with birthdays & dates!"); } catch { showNotif("📎 Manual copy: select text"); }
+    });
+
+    const dateInput = document.getElementById('start-date');
+    dateInput.valueAsDate = new Date();
+    dateInput.addEventListener('change', () => { refreshWeek(); });
+
+    // Initial load
+    refreshWeek();
+</script>
+</body>
+</html>
